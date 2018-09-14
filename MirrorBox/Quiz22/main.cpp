@@ -23,9 +23,9 @@ void init() {
 	// mesh
 	mesh1 = createPlane(2000, 2000, 200);
 	mesh5 = createSkyBox(6000);
-	mesh2 = createCube();
-	mesh3 = createCube();
-	mesh4 = createCube();
+	mesh2 = createCube(1);
+	mesh3 = createCube(1);
+	mesh4 = createCube(1);
 
 	// normals
 	calculateNormalPerFace(mesh1);
@@ -41,7 +41,7 @@ void init() {
 
 	// textures
 	loadBMP_custom(textures, "../BMP_files/brick.bmp", 0);
-	loadBMP_custom(textures, "../BMP_files/mirror.bmp", 1);
+	//loadBMP_custom(textures, "../BMP_files/mirror.bmp", 1);
 	codedTexture(textures, 2, 0); //Sky texture - noise multiscale. Type=0
 	codedTexture(textures, 3, 1); //Marble texture - noise marble. Type=1
 	loadBMP_custom(textures, "../BMP_files/cubesky.bmp", 4);
@@ -123,9 +123,7 @@ void display(void) {
 	//glRotatef(y_angle, 0.0f, 1.0f, 0.0f);
 	//glTranslatef(0.0f, 0.0f, 0.0f);
 
-	//=====================================
-	//		Stencil
-	//=====================================
+
 
 	glEnable(GL_STENCIL_TEST); //Start using the stencil
 	glDisable(GL_DEPTH_TEST);
@@ -142,30 +140,14 @@ void display(void) {
 	glStencilFunc(GL_EQUAL, 1, 0xFFFFFFFF);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP); //Keep the pixel
 
-	// Trying to get the box to reflect with this. I moved the box 420 units in front of of the camera hoping that it would show up in the mirror
-	// but something is wrong. Still working on it.
-	glPushMatrix();
-	glScalef(1.0, 1.0, -1.0);
-	glTranslatef(camera_x - 50, camera_y - 100, camera_z - 420);
-	glCallList(display4);
-	glPopMatrix();
-
-	// STENCIL-STEP 4. disable it
-	glDisable(GL_STENCIL_TEST);
-
-	glEnable(GL_BLEND);
-	glDisable(GL_LIGHTING);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glColor4f(0.7, 0.0, 0.0, 0.3);
-	glColor4f(1.0, 1.0, 1.0, 0.3);
 	// box 1
 	glPushMatrix();
 	glTranslatef(0, 300, 0);
 	glCallList(display2);
 	glPopMatrix();
 
-	glEnable(GL_LIGHTING);
-	glDisable(GL_BLEND);
+	// STENCIL-STEP 4. disable it
+	glDisable(GL_STENCIL_TEST);
 
 	// box 2
 	//glPushMatrix();
@@ -175,7 +157,7 @@ void display(void) {
 
 	// box 3
 	glPushMatrix();
-	glTranslatef(camera_x - 50, camera_y - 100, camera_z);
+	glTranslatef(camera_x, camera_y, camera_z);
 	glCallList(display4);
 	glPopMatrix();
 
