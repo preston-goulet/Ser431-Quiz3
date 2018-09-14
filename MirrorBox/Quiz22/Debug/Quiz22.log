@@ -1,0 +1,4 @@
+﻿  main.cpp
+y:\desktop\school\fall2018\ser431\mirrorbox\quiz22\mesh.h(391): warning C4018: '<': signed/unsigned mismatch
+y:\desktop\school\fall2018\ser431\mirrorbox\quiz22\mesh.h(418): warning C4018: '<': signed/unsigned mismatch
+  Quiz22.vcxproj -> Y:\Desktop\School\Fall2018\SER431\MirrorBox\Debug\MirrorBox.exe
