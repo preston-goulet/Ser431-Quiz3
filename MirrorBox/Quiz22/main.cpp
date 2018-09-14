@@ -1,6 +1,8 @@
 /**
- * SER 431
- * https://speakerdeck.com/javiergs/ser431-lecture-04
+	Quiz3 
+	Preston Goulet
+	Taylor Greeff
+	https://speakerdeck.com/javiergs/ser431-lecture-04
  **/
 
 #include <stdlib.h>
