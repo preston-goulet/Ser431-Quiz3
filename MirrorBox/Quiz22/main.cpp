@@ -23,7 +23,7 @@ void init() {
 	// mesh
 	mesh1 = createPlane(2000, 2000, 200);
 	mesh5 = createSkyBox(6000);
-	mesh2 = createCube(1);
+	mesh2 = createCube(10);
 	mesh3 = createCube(1);
 	mesh4 = createCube(1);
 
@@ -78,9 +78,9 @@ void init() {
 	glFogi(GL_FOG_MODE, GL_LINEAR);
 	GLfloat fogColor[4] = { 0.5, 0.5, 0.5, 1.0 };
 	glFogfv(GL_FOG_COLOR, fogColor);
-	glFogf(GL_FOG_DENSITY, 0.75);
+	glFogf(GL_FOG_DENSITY, 0.25);
 	glFogf(GL_FOG_START, 10.0);
-	glFogf(GL_FOG_END, 3000);
+	glFogf(GL_FOG_END, 5000);
 }
 
 // reshape
@@ -99,6 +99,11 @@ void renderBitmapString(float x, float y, float z, const char *string) {
 
 // display
 void display(void) {
+	Vec3f mirrorPos;
+	mirrorPos.x = 50;
+	mirrorPos.y = 0;
+	mirrorPos.z = -2500;
+
 	// STENCIL-STEP 3. enable and configure
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	glEnable(GL_CULL_FACE);
@@ -123,31 +128,50 @@ void display(void) {
 	//glRotatef(y_angle, 0.0f, 1.0f, 0.0f);
 	//glTranslatef(0.0f, 0.0f, 0.0f);
 
-
+	//=====================================
+	//		Stencil
+	//=====================================
 
 	glEnable(GL_STENCIL_TEST); //Start using the stencil
 	glDisable(GL_DEPTH_TEST);
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE); //Disable writing colors in frame buffer
 	glStencilFunc(GL_ALWAYS, 1, 0xFFFFFFFF); //Place a 1 where rendered
 	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE); 	//Replace where rendered
-	// PLAIN for the stencil
+														// PLAIN for the stencil
 	glPushMatrix();
-	glTranslatef(0, 300, 0);
+	glTranslatef(mirrorPos.x, mirrorPos.y, mirrorPos.z);
 	glCallList(display2);
 	glPopMatrix();
+
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE); //Reenable color
 	glEnable(GL_DEPTH_TEST);
 	glStencilFunc(GL_EQUAL, 1, 0xFFFFFFFF);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP); //Keep the pixel
 
-	// box 1
+	// Trying to get the box to reflect with this. I moved the box 420 units in front of of the camera hoping that it would show up in the mirror
+	// but something is wrong. Still working on it.
 	glPushMatrix();
-	glTranslatef(0, 300, 0);
-	glCallList(display2);
+	glScalef(1.0, 1.0, -1.0);
+	glTranslatef(camera_x - 50, camera_y - 100, camera_z + 850);
+	glCallList(display4); //mirrored box
 	glPopMatrix();
 
 	// STENCIL-STEP 4. disable it
 	glDisable(GL_STENCIL_TEST);
+
+	glEnable(GL_BLEND);
+	glDisable(GL_LIGHTING);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glColor4f(0.7, 0.0, 0.0, 0.3);
+	glColor4f(1.0, 1.0, 1.0, 0.3);
+	// box 1
+	glPushMatrix();
+	glTranslatef(mirrorPos.x, mirrorPos.y, mirrorPos.z);
+	glCallList(display2); //mirror
+	glPopMatrix();
+
+	glEnable(GL_LIGHTING);
+	glDisable(GL_BLEND);
 
 	// box 2
 	//glPushMatrix();
@@ -157,21 +181,21 @@ void display(void) {
 
 	// box 3
 	glPushMatrix();
-	glTranslatef(camera_x, camera_y, camera_z);
+	glTranslatef(camera_x - 50, camera_y - 100, camera_z);
 	glCallList(display4);
 	glPopMatrix();
 
 
 	//plane
-	glPushMatrix();
-	glTranslatef(-1000, 200, -1000);
-	glCallList(display1);
-	glPopMatrix();
+	//glPushMatrix();
+	//glTranslatef(-1000, 200, -1000);
+	//glCallList(display1);
+	//glPopMatrix();
 
 	// end
 	// skybox
 	glPushMatrix();
-	glTranslatef(-1500, -2500, -1500);
+	glTranslatef(-3000, -3000, -2000);
 	glCallList(display5);
 	glPopMatrix();
 	// end
@@ -198,7 +222,6 @@ void display(void) {
 	glDisable(GL_CULL_FACE);
 	glutSwapBuffers();
 }
-
 // rotate what the user see
 void rotate_point(float angle) {
 	float s = sin(angle);

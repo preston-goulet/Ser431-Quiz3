@@ -240,20 +240,20 @@ Mesh* createSkyBox(int w) {
 	//mesh->face_index_vertex.push_back(2);//0
 	//mesh->face_index_vertex.push_back(3);//2
 	//mesh->face_index_vertex.push_back(0);//3
-										 // face 2 right
-	mesh->face_index_vertex.push_back(4);//0
-	mesh->face_index_vertex.push_back(5);//1
-	mesh->face_index_vertex.push_back(0);//5
-	mesh->face_index_vertex.push_back(5);//0
-	mesh->face_index_vertex.push_back(1);//5
-	mesh->face_index_vertex.push_back(0);//4
-										 // face 3 top
+										 // face 2 top
+	//mesh->face_index_vertex.push_back(4);//0
 	//mesh->face_index_vertex.push_back(5);//1
-	////mesh->face_index_vertex.push_back(6);//2
-	//mesh->face_index_vertex.push_back(1);//6
-	//mesh->face_index_vertex.push_back(6);//1
-	//mesh->face_index_vertex.push_back(2);//6
+	//mesh->face_index_vertex.push_back(0);//5
+	//mesh->face_index_vertex.push_back(5);//0
 	//mesh->face_index_vertex.push_back(1);//5
+	//mesh->face_index_vertex.push_back(0);//4
+										 // face 3 right
+	mesh->face_index_vertex.push_back(5);//1
+	mesh->face_index_vertex.push_back(6);//2
+	mesh->face_index_vertex.push_back(1);//6
+	mesh->face_index_vertex.push_back(6);//1
+	mesh->face_index_vertex.push_back(2);//6
+	mesh->face_index_vertex.push_back(1);//5
 										 // face 4 Bottom
 	//mesh->face_index_vertex.push_back(6);//2
 	//mesh->face_index_vertex.push_back(7);//3
