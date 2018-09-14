@@ -39,7 +39,7 @@ void init() {
 
 	// textures
 	loadBMP_custom(textures, "../BMP_files/brick.bmp", 0);
-	loadBMP_custom(textures, "../BMP_files/oldbox.bmp", 1);
+	loadBMP_custom(textures, "../BMP_files/mirror.bmp", 1);
 	codedTexture(textures, 2, 0); //Sky texture - noise multiscale. Type=0
 	codedTexture(textures, 3, 1); //Marble texture - noise marble. Type=1
 	loadBMP_custom(textures, "../BMP_files/cubesky.bmp", 4);
@@ -67,6 +67,11 @@ void init() {
 	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
+	// STENCIL|STEP 2. NEW LINES
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glClearStencil(0); //define the value to use as clean.
+
 	glEnable(GL_FOG);
 	glFogi(GL_FOG_MODE, GL_LINEAR);
 	GLfloat fogColor[4] = { 0.5, 0.5, 0.5, 1.0 };
@@ -92,7 +97,9 @@ void renderBitmapString(float x, float y, float z, const char *string) {
 
 // display
 void display(void) {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// STENCIL-STEP 3. enable and configure
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	glEnable(GL_CULL_FACE);
 
 	// projection
 	glMatrixMode(GL_PROJECTION);
@@ -114,16 +121,31 @@ void display(void) {
 	//glRotatef(y_angle, 0.0f, 1.0f, 0.0f);
 	//glTranslatef(0.0f, 0.0f, 0.0f);
 
-	//plane
+
+
+	glEnable(GL_STENCIL_TEST); //Start using the stencil
+	glDisable(GL_DEPTH_TEST);
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE); //Disable writing colors in frame buffer
+	glStencilFunc(GL_ALWAYS, 1, 0xFFFFFFFF); //Place a 1 where rendered
+	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE); 	//Replace where rendered
+	// PLAIN for the stencil
 	glPushMatrix();
-	glTranslatef(-1000, 200, -1000);
-	//glCallList(display1);
+	glTranslatef(0, 300, 0);
+	glCallList(display2);
 	glPopMatrix();
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE); //Reenable color
+	glEnable(GL_DEPTH_TEST);
+	glStencilFunc(GL_EQUAL, 1, 0xFFFFFFFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP); //Keep the pixel
+
 	// box 1
 	glPushMatrix();
 	glTranslatef(0, 300, 0);
 	glCallList(display2);
 	glPopMatrix();
+
+	// STENCIL-STEP 4. disable it
+	glDisable(GL_STENCIL_TEST);
 
 	// box 2
 	//glPushMatrix();
@@ -133,9 +155,17 @@ void display(void) {
 
 	// box 3
 	glPushMatrix();
-	glTranslatef(-200, 300, 0);
+	glTranslatef(camera_x, camera_y, camera_z);
 	glCallList(display4);
 	glPopMatrix();
+
+
+	//plane
+	glPushMatrix();
+	glTranslatef(-1000, 200, -1000);
+	glCallList(display1);
+	glPopMatrix();
+
 	// end
 	// skybox
 	glPushMatrix();
@@ -162,6 +192,8 @@ void display(void) {
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
+
+	glDisable(GL_CULL_FACE);
 	glutSwapBuffers();
 }
 
@@ -232,7 +264,7 @@ void specialkeys(int key, int x, int y) {
 // main
 int main(int argc, char* argv[]) {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA | GLUT_STENCIL);
 	glutInitWindowPosition(0, 0);
 	glutInitWindowSize(window_width, window_height);
 	glutCreateWindow("Sky Box");
