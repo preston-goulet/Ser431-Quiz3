@@ -234,12 +234,12 @@ Mesh* createSkyBox(int w) {
 	mesh->dot_vertex.push_back(Vec3<GLfloat>(0.0, 0.0, 0.0));
 
 	// face 1
-	//mesh->face_index_vertex.push_back(1);//0
-	//mesh->face_index_vertex.push_back(2);//1
-	//mesh->face_index_vertex.push_back(0);//2
-	//mesh->face_index_vertex.push_back(2);//0
-	//mesh->face_index_vertex.push_back(3);//2
-	//mesh->face_index_vertex.push_back(0);//3
+	mesh->face_index_vertex.push_back(1);//0
+	mesh->face_index_vertex.push_back(2);//1
+	mesh->face_index_vertex.push_back(0);//2
+	mesh->face_index_vertex.push_back(2);//0
+	mesh->face_index_vertex.push_back(3);//2
+	mesh->face_index_vertex.push_back(0);//3
 										 // face 2
 	mesh->face_index_vertex.push_back(4);//0
 	mesh->face_index_vertex.push_back(5);//1
