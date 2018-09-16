@@ -9,6 +9,9 @@
 
 #define GL_CLAMP_TO_EDGE 0x812F
 #define GL_TEXTURE_WRAP_R 0x8072
+
+bool isReflectionOn = true;
+
 // draw
 GLuint meshToDisplayList(Mesh* m, int id, int texture) {
 	GLuint listID = glGenLists(id);
@@ -37,4 +40,36 @@ GLuint meshToDisplayList(Mesh* m, int id, int texture) {
 	glDisable(GL_TEXTURE_2D);
 	glEndList();
 	return listID;
+}
+
+void toggleReflection() {
+	if (isReflectionOn) {
+		isReflectionOn = false;
+	}
+	else {
+		isReflectionOn = true;
+	}
+}
+
+void menuListener(int option) {
+	switch (option) {
+	case 0:
+		toggleReflection();
+		break;
+	}
+
+	glutPostRedisplay();
+}
+
+void addMenu() {
+	int optionsMenu = glutCreateMenu(menuListener);
+
+	//add entries to submenu Colores
+	glutAddMenuEntry("Toggle Reflection", 0);
+	// create main menu
+	int menu = glutCreateMenu(menuListener);
+	glutAddSubMenu("Options", optionsMenu);
+
+	// attach the menu to the right button
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
