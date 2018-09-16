@@ -14,18 +14,19 @@
 #include "controls.h"
 
  // global
-Mesh *mesh1, *mesh2, *mesh3, *mesh4, *mesh5;
-GLuint display1, display2, display3, display4, display5;
-GLuint textures[5];
+Mesh *mesh1, *mesh2, *mesh3, *mesh4, *mesh5, *mesh6;
+GLuint display1, display2, display3, display4, display5, display6;
+GLuint textures[6];
 
 // init
 void init() {
 	// mesh
 	mesh1 = createPlane(2000, 2000, 200);
+	mesh2 = createCubeMissing(10);
+	mesh3 = createCube(1);
+	mesh4 = createCube(1);
 	mesh5 = createSkyBox(6000);
-	mesh2 = createCube();
-	mesh3 = createCube();
-	mesh4 = createCube();
+	mesh6 = createCubeFace(10);
 
 	// normals
 	calculateNormalPerFace(mesh1);
@@ -33,18 +34,21 @@ void init() {
 	calculateNormalPerFace(mesh3);
 	calculateNormalPerFace(mesh4);
 	calculateNormalPerFace(mesh5);
+	calculateNormalPerFace(mesh6);
 	calculateNormalPerVertex(mesh1);
 	calculateNormalPerVertex(mesh2);
 	calculateNormalPerVertex(mesh3);
 	calculateNormalPerVertex(mesh4);
 	calculateNormalPerVertex(mesh5);
+	calculateNormalPerVertex(mesh6);
 
 	// textures
 	loadBMP_custom(textures, "../BMP_files/brick.bmp", 0);
-	loadBMP_custom(textures, "../BMP_files/mirror.bmp", 1);
+	//loadBMP_custom(textures, "../BMP_files/mirror.bmp", 1);
 	codedTexture(textures, 2, 0); //Sky texture - noise multiscale. Type=0
 	codedTexture(textures, 3, 1); //Marble texture - noise marble. Type=1
 	loadBMP_custom(textures, "../BMP_files/cubesky.bmp", 4);
+	loadBMP_custom(textures, "../BMP_files/reflection.bmp", 5);
 
 	// display lists
 	display1 = meshToDisplayList(mesh1, 1, textures[0]);
@@ -52,6 +56,7 @@ void init() {
 	display3 = meshToDisplayList(mesh3, 3, textures[2]);
 	display4 = meshToDisplayList(mesh4, 4, textures[3]);
 	display5 = meshToDisplayList(mesh5, 5, textures[4]);
+	display6 = meshToDisplayList(mesh6, 6, textures[5]);
 
 	// configuration
 	glShadeModel(GL_SMOOTH);
@@ -99,9 +104,13 @@ void renderBitmapString(float x, float y, float z, const char *string) {
 
 // display
 void display(void) {
+	Vec3f mirrorPos;
+	mirrorPos.x = 50;
+	mirrorPos.y = -500;
+	mirrorPos.z = -2500;
+
 	// STENCIL-STEP 3. enable and configure
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	glEnable(GL_CULL_FACE);
 
 	// projection
 	glMatrixMode(GL_PROJECTION);
@@ -132,13 +141,17 @@ void display(void) {
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE); //Disable writing colors in frame buffer
 	glStencilFunc(GL_ALWAYS, 1, 0xFFFFFFFF); //Place a 1 where rendered
 	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE); 	//Replace where rendered
-	// PLAIN for the stencil
-	glPushMatrix();
-	glTranslatef(0, 300, 0);
-	glCallList(display2);
+														// PLAIN for the stencil
+	
+
+	glPushMatrix();	
+	glTranslatef(mirrorPos.x, mirrorPos.y, mirrorPos.z);
+	glCallList(display6); //mirror plane
 	glPopMatrix();
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE); //Reenable color
+
 	glEnable(GL_DEPTH_TEST);
+
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE); //Reenable color
 	glStencilFunc(GL_EQUAL, 1, 0xFFFFFFFF);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP); //Keep the pixel
 
@@ -146,8 +159,8 @@ void display(void) {
 	// but something is wrong. Still working on it.
 	glPushMatrix();
 	glScalef(1.0, 1.0, -1.0);
-	glTranslatef(camera_x - 50, camera_y - 100, camera_z - 420);
-	glCallList(display4);
+	glTranslatef(camera_x - 50, camera_y - 150, camera_z + 1500);
+	glCallList(display4); //mirrored box
 	glPopMatrix();
 
 	// STENCIL-STEP 4. disable it
@@ -158,38 +171,42 @@ void display(void) {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glColor4f(0.7, 0.0, 0.0, 0.3);
 	glColor4f(1.0, 1.0, 1.0, 0.3);
+
 	// box 1
 	glPushMatrix();
-	glTranslatef(0, 300, 0);
-	glCallList(display2);
+	glTranslatef(mirrorPos.x, mirrorPos.y, mirrorPos.z);
+	glCallList(display6); //mirror
 	glPopMatrix();
 
 	glEnable(GL_LIGHTING);
 	glDisable(GL_BLEND);
 
+	// Enable Culling
+	glEnable(GL_CULL_FACE);
+
 	// box 2
-	//glPushMatrix();
-	//glTranslatef(200, 300, 0);
-	//glCallList(display3);
-	//glPopMatrix();
+	glPushMatrix();
+	glTranslatef(mirrorPos.x, mirrorPos.y, mirrorPos.z);
+	glCallList(display2); //add rest of the mirror 
+	glPopMatrix();
 
 	// box 3
 	glPushMatrix();
-	glTranslatef(camera_x - 50, camera_y - 100, camera_z);
-	glCallList(display4);
+	glTranslatef(camera_x - 50, camera_y - 150, camera_z);
+	glCallList(display4); //Box under camera
 	glPopMatrix();
 
 
 	//plane
-	glPushMatrix();
-	glTranslatef(-1000, 200, -1000);
-	glCallList(display1);
-	glPopMatrix();
+	//glPushMatrix();
+	//glTranslatef(-1000, 200, -1000);
+	//glCallList(display1);
+	//glPopMatrix();
 
 	// end
 	// skybox
 	glPushMatrix();
-	glTranslatef(-1500, -2500, -1500);
+	glTranslatef(-3000, -3000, -2000);
 	glCallList(display5);
 	glPopMatrix();
 	// end
@@ -216,7 +233,6 @@ void display(void) {
 	glDisable(GL_CULL_FACE);
 	glutSwapBuffers();
 }
-
 // rotate what the user see
 void rotate_point(float angle) {
 	float s = sin(angle);

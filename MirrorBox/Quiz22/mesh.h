@@ -142,12 +142,115 @@ Mesh* loadFile(const char* file) {
 }
 
 // create a triangulated box
-Mesh* createCube() {
+Mesh* createCubeFace(int size) {
 	Mesh *mesh = new Mesh;
 	// Vertexes
-	int BOX_WIDTH = 100;
-	int BOX_HEIGHT = 100;
-	int BOX_DEPTH = 100;
+	int BOX_WIDTH = 100 * size;
+	int BOX_HEIGHT = 100 * size;
+	int BOX_DEPTH = 100 * size;
+	mesh->dot_vertex.push_back(Vec3<GLfloat>(0.0, BOX_HEIGHT, BOX_DEPTH));
+	mesh->dot_vertex.push_back(Vec3<GLfloat>(BOX_WIDTH, BOX_HEIGHT, BOX_DEPTH));
+	mesh->dot_vertex.push_back(Vec3<GLfloat>(BOX_WIDTH, 0.0, BOX_DEPTH));
+	mesh->dot_vertex.push_back(Vec3<GLfloat>(0.0, 0.0, BOX_DEPTH));
+
+	// face 1
+	mesh->face_index_vertex.push_back(0);//0
+	mesh->face_index_vertex.push_back(2);//1
+	mesh->face_index_vertex.push_back(1);//2
+	mesh->face_index_vertex.push_back(0);//0
+	mesh->face_index_vertex.push_back(3);//2
+	mesh->face_index_vertex.push_back(2);//3
+										 // texture
+	mesh->dot_texture.push_back(Vec2<GLfloat>(0.0, 1.0));
+	mesh->dot_texture.push_back(Vec2<GLfloat>(1.0, 1.0));
+	mesh->dot_texture.push_back(Vec2<GLfloat>(1.0, 0.0));
+	mesh->dot_texture.push_back(Vec2<GLfloat>(0.0, 0.0));
+	
+	mesh->face_index_texture.push_back(0);//0
+	mesh->face_index_texture.push_back(2);//1
+	mesh->face_index_texture.push_back(1);//2
+	mesh->face_index_texture.push_back(0);//0
+	mesh->face_index_texture.push_back(3);//2
+	mesh->face_index_texture.push_back(2);//3
+	
+	return mesh;
+}
+
+// create a triangulated box
+Mesh* createCubeMissing(int size) {
+	Mesh *mesh = new Mesh;
+	// Vertexes
+	int BOX_WIDTH = 100 * size;
+	int BOX_HEIGHT = 100 * size;
+	int BOX_DEPTH = 100 * size;
+	mesh->dot_vertex.push_back(Vec3<GLfloat>(0.0, BOX_HEIGHT, BOX_DEPTH));
+	mesh->dot_vertex.push_back(Vec3<GLfloat>(BOX_WIDTH, BOX_HEIGHT, BOX_DEPTH));
+	mesh->dot_vertex.push_back(Vec3<GLfloat>(BOX_WIDTH, 0.0, BOX_DEPTH));
+	mesh->dot_vertex.push_back(Vec3<GLfloat>(0.0, 0.0, BOX_DEPTH));
+
+	mesh->dot_vertex.push_back(Vec3<GLfloat>(0.0, BOX_HEIGHT, 0.0));
+	mesh->dot_vertex.push_back(Vec3<GLfloat>(BOX_WIDTH, BOX_HEIGHT, 0.0));
+	mesh->dot_vertex.push_back(Vec3<GLfloat>(BOX_WIDTH, 0.0, 0.0));
+	mesh->dot_vertex.push_back(Vec3<GLfloat>(0.0, 0.0, 0.0));
+
+										 // face 2
+	mesh->face_index_vertex.push_back(0);//0
+	mesh->face_index_vertex.push_back(5);//1
+	mesh->face_index_vertex.push_back(4);//5
+	mesh->face_index_vertex.push_back(0);//0
+	mesh->face_index_vertex.push_back(1);//5
+	mesh->face_index_vertex.push_back(5);//4
+										 // face 3
+	mesh->face_index_vertex.push_back(1);//1
+	mesh->face_index_vertex.push_back(6);//2
+	mesh->face_index_vertex.push_back(5);//6
+	mesh->face_index_vertex.push_back(1);//1
+	mesh->face_index_vertex.push_back(2);//6
+	mesh->face_index_vertex.push_back(6);//5
+										 // face 4
+	mesh->face_index_vertex.push_back(2);//2
+	mesh->face_index_vertex.push_back(7);//3
+	mesh->face_index_vertex.push_back(6);//7
+	mesh->face_index_vertex.push_back(2);//2
+	mesh->face_index_vertex.push_back(3);//7
+	mesh->face_index_vertex.push_back(7);//6
+										 // face 5
+	mesh->face_index_vertex.push_back(4);//0
+	mesh->face_index_vertex.push_back(3);//3
+	mesh->face_index_vertex.push_back(0);//7
+	mesh->face_index_vertex.push_back(4);//0
+	mesh->face_index_vertex.push_back(7);//7
+	mesh->face_index_vertex.push_back(3);//4
+										 // face 6
+	mesh->face_index_vertex.push_back(5);//4 
+	mesh->face_index_vertex.push_back(7);//5
+	mesh->face_index_vertex.push_back(4);//6
+	mesh->face_index_vertex.push_back(5);//4
+	mesh->face_index_vertex.push_back(6);//6
+	mesh->face_index_vertex.push_back(7);//7
+										 // texture
+	mesh->dot_texture.push_back(Vec2<GLfloat>(0.0, 1.0));
+	mesh->dot_texture.push_back(Vec2<GLfloat>(1.0, 1.0));
+	mesh->dot_texture.push_back(Vec2<GLfloat>(1.0, 0.0));
+	mesh->dot_texture.push_back(Vec2<GLfloat>(0.0, 0.0));
+	for (int t = 0; t<5; t++) {
+		mesh->face_index_texture.push_back(0);//0
+		mesh->face_index_texture.push_back(2);//1
+		mesh->face_index_texture.push_back(1);//2
+		mesh->face_index_texture.push_back(0);//0
+		mesh->face_index_texture.push_back(3);//2
+		mesh->face_index_texture.push_back(2);//3
+	}
+	return mesh;
+}
+
+// create a triangulated box
+Mesh* createCube(int size) {
+	Mesh *mesh = new Mesh;
+	// Vertexes
+	int BOX_WIDTH = 100 * size;
+	int BOX_HEIGHT = 100 * size;
+	int BOX_DEPTH = 100 * size;
 	mesh->dot_vertex.push_back(Vec3<GLfloat>(0.0, BOX_HEIGHT, BOX_DEPTH));
 	mesh->dot_vertex.push_back(Vec3<GLfloat>(BOX_WIDTH, BOX_HEIGHT, BOX_DEPTH));
 	mesh->dot_vertex.push_back(Vec3<GLfloat>(BOX_WIDTH, 0.0, BOX_DEPTH));
@@ -233,42 +336,42 @@ Mesh* createSkyBox(int w) {
 	mesh->dot_vertex.push_back(Vec3<GLfloat>(BOX_WIDTH, 0.0, 0.0));
 	mesh->dot_vertex.push_back(Vec3<GLfloat>(0.0, 0.0, 0.0));
 
-	// face 1
-	mesh->face_index_vertex.push_back(1);//0
-	mesh->face_index_vertex.push_back(2);//1
-	mesh->face_index_vertex.push_back(0);//2
-	mesh->face_index_vertex.push_back(2);//0
-	mesh->face_index_vertex.push_back(3);//2
-	mesh->face_index_vertex.push_back(0);//3
-										 // face 2
-	mesh->face_index_vertex.push_back(4);//0
-	mesh->face_index_vertex.push_back(5);//1
-	mesh->face_index_vertex.push_back(0);//5
-	mesh->face_index_vertex.push_back(5);//0
-	mesh->face_index_vertex.push_back(1);//5
-	mesh->face_index_vertex.push_back(0);//4
-										 // face 3
+										// face 1 back
+	//mesh->face_index_vertex.push_back(1);//0
+	//mesh->face_index_vertex.push_back(2);//1
+	//mesh->face_index_vertex.push_back(0);//2
+	//mesh->face_index_vertex.push_back(2);//0
+	//mesh->face_index_vertex.push_back(3);//2
+	//mesh->face_index_vertex.push_back(0);//3
+										 // face 2 top
+	//mesh->face_index_vertex.push_back(4);//0
+	//mesh->face_index_vertex.push_back(5);//1
+	//mesh->face_index_vertex.push_back(0);//5
+	//mesh->face_index_vertex.push_back(5);//0
+	//mesh->face_index_vertex.push_back(1);//5
+	//mesh->face_index_vertex.push_back(0);//4
+										 // face 3 right
 	mesh->face_index_vertex.push_back(5);//1
 	mesh->face_index_vertex.push_back(6);//2
 	mesh->face_index_vertex.push_back(1);//6
 	mesh->face_index_vertex.push_back(6);//1
 	mesh->face_index_vertex.push_back(2);//6
 	mesh->face_index_vertex.push_back(1);//5
-										 // face 4
-	mesh->face_index_vertex.push_back(6);//2
-	mesh->face_index_vertex.push_back(7);//3
-	mesh->face_index_vertex.push_back(2);//7
-	mesh->face_index_vertex.push_back(7);//2
-	mesh->face_index_vertex.push_back(3);//7
-	mesh->face_index_vertex.push_back(2);//6
-										 // face 5
+										 // face 4 Bottom
+	//mesh->face_index_vertex.push_back(6);//2
+	//mesh->face_index_vertex.push_back(7);//3
+	//mesh->face_index_vertex.push_back(2);//7
+	//mesh->face_index_vertex.push_back(7);//2
+	//mesh->face_index_vertex.push_back(3);//7
+	//mesh->face_index_vertex.push_back(2);//6
+										 // face 5 left
 	mesh->face_index_vertex.push_back(0);//0
 	mesh->face_index_vertex.push_back(3);//3
 	mesh->face_index_vertex.push_back(4);//7
 	mesh->face_index_vertex.push_back(3);//0
 	mesh->face_index_vertex.push_back(7);//7
 	mesh->face_index_vertex.push_back(4);//4
-										 // face 6
+										 // face 6 front
 	mesh->face_index_vertex.push_back(4);//4 
 	mesh->face_index_vertex.push_back(7);//5
 	mesh->face_index_vertex.push_back(5);//6
