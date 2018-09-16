@@ -83,9 +83,9 @@ void init() {
 	glFogi(GL_FOG_MODE, GL_LINEAR);
 	GLfloat fogColor[4] = { 0.5, 0.5, 0.5, 1.0 };
 	glFogfv(GL_FOG_COLOR, fogColor);
-	glFogf(GL_FOG_DENSITY, 0.25);
+	glFogf(GL_FOG_DENSITY, 0.75);
 	glFogf(GL_FOG_START, 10.0);
-	glFogf(GL_FOG_END, 5000);
+	glFogf(GL_FOG_END, 3000);
 }
 
 // reshape
@@ -142,14 +142,16 @@ void display(void) {
 	glStencilFunc(GL_ALWAYS, 1, 0xFFFFFFFF); //Place a 1 where rendered
 	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE); 	//Replace where rendered
 														// PLAIN for the stencil
+	
+
 	glPushMatrix();	
 	glTranslatef(mirrorPos.x, mirrorPos.y, mirrorPos.z);
-	//glRotatef(90, 1.0, 0.0, 0.0);
 	glCallList(display6); //mirror plane
 	glPopMatrix();
 
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE); //Reenable color
 	glEnable(GL_DEPTH_TEST);
+
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE); //Reenable color
 	glStencilFunc(GL_EQUAL, 1, 0xFFFFFFFF);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP); //Keep the pixel
 
@@ -169,10 +171,10 @@ void display(void) {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glColor4f(0.7, 0.0, 0.0, 0.3);
 	glColor4f(1.0, 1.0, 1.0, 0.3);
+
 	// box 1
 	glPushMatrix();
 	glTranslatef(mirrorPos.x, mirrorPos.y, mirrorPos.z);
-	//glRotatef(90, 1.0, 0.0, 0.0);
 	glCallList(display6); //mirror
 	glPopMatrix();
 
