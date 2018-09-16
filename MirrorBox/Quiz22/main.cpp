@@ -48,6 +48,7 @@ void init() {
 	codedTexture(textures, 2, 0); //Sky texture - noise multiscale. Type=0
 	codedTexture(textures, 3, 1); //Marble texture - noise marble. Type=1
 	loadBMP_custom(textures, "../BMP_files/cubesky.bmp", 4);
+	loadBMP_custom(textures, "../BMP_files/reflection.bmp", 5);
 
 	// display lists
 	display1 = meshToDisplayList(mesh1, 1, textures[0]);
@@ -136,7 +137,7 @@ void display(void) {
 	//=====================================
 
 	glEnable(GL_STENCIL_TEST); //Start using the stencil
-	//glDisable(GL_DEPTH_TEST);
+	glDisable(GL_DEPTH_TEST);
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE); //Disable writing colors in frame buffer
 	glStencilFunc(GL_ALWAYS, 1, 0xFFFFFFFF); //Place a 1 where rendered
 	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE); 	//Replace where rendered
@@ -148,7 +149,7 @@ void display(void) {
 	glPopMatrix();
 
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE); //Reenable color
-	//glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
 	glStencilFunc(GL_EQUAL, 1, 0xFFFFFFFF);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP); //Keep the pixel
 
@@ -156,7 +157,7 @@ void display(void) {
 	// but something is wrong. Still working on it.
 	glPushMatrix();
 	glScalef(1.0, 1.0, -1.0);
-	glTranslatef(camera_x - 50, camera_y - 50, camera_z + 1490);
+	glTranslatef(camera_x - 50, camera_y - 150, camera_z + 1500);
 	glCallList(display4); //mirrored box
 	glPopMatrix();
 
@@ -184,12 +185,12 @@ void display(void) {
 	// box 2
 	glPushMatrix();
 	glTranslatef(mirrorPos.x, mirrorPos.y, mirrorPos.z);
-	glCallList(display2); //add rest of the mirror box
+	glCallList(display2); //add rest of the mirror 
 	glPopMatrix();
 
 	// box 3
 	glPushMatrix();
-	glTranslatef(camera_x - 50, camera_y - 50, camera_z);
+	glTranslatef(camera_x - 50, camera_y - 150, camera_z);
 	glCallList(display4); //Box under camera
 	glPopMatrix();
 
