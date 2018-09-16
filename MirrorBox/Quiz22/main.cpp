@@ -20,6 +20,8 @@ GLuint textures[6];
 
 // init
 void init() {
+	addMenu();
+
 	// mesh
 	mesh1 = createPlane(2000, 2000, 200);
 	mesh2 = createCubeMissing(10);
@@ -157,11 +159,13 @@ void display(void) {
 
 	// Trying to get the box to reflect with this. I moved the box 420 units in front of of the camera hoping that it would show up in the mirror
 	// but something is wrong. Still working on it.
-	glPushMatrix();
-	glScalef(1.0, 1.0, -1.0);
-	glTranslatef(camera_x - 50, camera_y - 150, camera_z + 1500);
-	glCallList(display4); //mirrored box
-	glPopMatrix();
+	if (isReflectionOn) {
+		glPushMatrix();
+		glScalef(1.0, 1.0, -1.0);
+		glTranslatef(camera_x - 50, camera_y - 150, camera_z + 1500);
+		glCallList(display4); //mirrored box
+		glPopMatrix();
+	}
 
 	// STENCIL-STEP 4. disable it
 	glDisable(GL_STENCIL_TEST);
@@ -225,6 +229,7 @@ void display(void) {
 	glColor3f(1.0, 1.0, 1.0);
 	renderBitmapString(0.0, window_height - 13.0f, 0.0f, "Use [Arrows] to move in plain");
 	renderBitmapString(0.0, window_height - 26.0f, 0.0f, "Use [W and S] to look up and down");
+	renderBitmapString(0.0, window_height - 39.0f, 0.0f, "Use [Right Click] to open the menu");
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
@@ -233,6 +238,7 @@ void display(void) {
 	glDisable(GL_CULL_FACE);
 	glutSwapBuffers();
 }
+
 // rotate what the user see
 void rotate_point(float angle) {
 	float s = sin(angle);
